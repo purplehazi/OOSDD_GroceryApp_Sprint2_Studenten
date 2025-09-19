@@ -38,22 +38,22 @@ namespace Grocery.App.ViewModels
             foreach (var item in _productService.GetAll()) //Grabs all products from the database and puts it in the variable
             {
                 if (item.Stock > 0) //Checks if there is stock
-                    {
-                        bool alreadyOnList = false;
+                {
+                        bool alreadyOnList = false; //Checks if item is already on the list
                         foreach (var itemList in MyGroceryListItems)
                         {
                             if (itemList.ProductId == item.Id)
-                             {
+                            {
                             alreadyOnList = true;
-                             }
+                            }
                         }
                         if (!alreadyOnList) 
-                            {
+                        {
                                 AvailableProducts.Add(item);
-                            }
+                        }
 
 
-                    }
+                }
             }
         }
 
@@ -71,12 +71,18 @@ namespace Grocery.App.ViewModels
         [RelayCommand]
         public void AddProduct(Product product)
         {
-            //Controleer of het product bestaat en dat de Id > 0
-            //Maak een GroceryListItem met Id 0 en vul de juiste productid en grocerylistid
-            //Voeg het GroceryListItem toe aan de dataset middels de _groceryListItemsService
-            //Werk de voorraad (Stock) van het product bij en zorg dat deze wordt vastgelegd (middels _productService)
-            //Werk de lijst AvailableProducts bij, want dit product is niet meer beschikbaar
-            //call OnGroceryListChanged(GroceryList);
+            if (product != null && product.Id > 0)
+            {
+                    var newGroceryListItem = new GroceryListItem(0, GroceryList.Id, product.Id, 1);
+                    _groceryListItemsService.Add(newGroceryListItem);
+                if (product.Stock > 0)
+                {
+                    product.Stock--;
+                    _productService.Update(product);
+                }
+                AvailableProducts.Remove(product);
+                OnGroceryListChanged(GroceryList);
+            }
         }
     }
 }
