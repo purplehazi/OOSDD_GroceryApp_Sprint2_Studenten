@@ -6,7 +6,7 @@ using Grocery.Core.Interfaces.Services;
 using Grocery.Core.Interfaces.Repositories;
 using Grocery.Core.Data.Repositories;
 
-namespace Grocery.App
+namespace Grocery.App //test of het werkt
 {
     public static class MauiProgram
     {
